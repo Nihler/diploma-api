@@ -15,5 +15,6 @@ exports.postAddRoute = (req,res,next) =>{
         res.redirect('/');
     }).catch(err => {
         console.log(err);
-    })
+    });
+    res.send('OK');
 }
