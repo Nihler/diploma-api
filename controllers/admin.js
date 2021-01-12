@@ -1,9 +1,12 @@
 const Route = require('../models/route');
 
 exports.postAddRoute = (req,res,next) =>{
-    console.log("====================");
+    console.log("==========BODY START==========");
     console.log(req.body);
-    console.log("====================");
+    console.log("==========BODY STOP==========");
+    console.log("==========FULL START==========");
+    console.log(req);
+    console.log("==========FULL STOP==========");
     const route = new Route({
         locations: req.body.locations
     });
