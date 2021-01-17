@@ -4,14 +4,15 @@ const Route = require("../models/path");
 exports.postAddRoute = (req, res, next) => {
   const locations = req.body.locations;
   const userId = req.body.userId;
-  const runStart = locations[0].timestamp;
-  const runStop = locations[locations.length - 1].timestamp;
+  const runStart = req.body.runStart;
+  const runStop = req.body.runStop;
   const route = new Route({
     locations: req.body.locations,
     userId: userId,
     runStart: runStart,
     runStop: runStop,
   });
+  console.log(route);
   route
     .save()
     .then((res) => {

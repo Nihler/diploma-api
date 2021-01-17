@@ -3,7 +3,9 @@ const nodemailer = require("nodemailer");
 const sendgridTransport = require("nodemailer-sendgrid-transport");
 const jwt = require('jsonwebtoken');
 
+
 const User = require("../models/user");
+const config = require("../config/auth.config");
 
 const transporter = nodemailer.createTransport(
   sendgridTransport({
@@ -52,7 +54,7 @@ exports.postLogin = (req, res, next) => {
           //req.session.token = 
           return req.session.save((result) => {
             res.status("202").send({
-              id: user.userId,
+              userId: user._id,
               accessToken: token,
               email: user.email,
               username: user.username,
