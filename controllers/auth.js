@@ -32,7 +32,9 @@ exports.getSignup = (req, res, next) => {
 exports.postLogin = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
+  console.log(email, password);
   User.findOne({ email: email }).then((user) => {
+    console.log(user);
     if (!user)
       return res
         .status("400")
