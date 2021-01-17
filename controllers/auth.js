@@ -55,7 +55,8 @@ exports.postLogin = (req, res, next) => {
               id: user.userId,
               accessToken: token,
               email: user.email,
-              username: user.username
+              username: user.username,
+              expiresIn: 86400
             });
           });
         }
