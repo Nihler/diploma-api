@@ -2,7 +2,8 @@ const path = require('path');
 
 const express = require('express');
 
-const adminController = require('../controllers/admin');
+const pathController = require('../controllers/path');
+const isAuth = require("../middleware/is-auth");
 
 const router = express.Router();
 
@@ -21,6 +22,8 @@ const router = express.Router();
 
 // router.post('/delete-product', adminController.postDeleteProduct);
 
-router.post('/addRoute', adminController.postAddRoute);
+router.post('/addRoute',  pathController.postAddRoute);
+
+router.post("/myRoutes", pathController.postMyRoutes);
 
 module.exports = router;

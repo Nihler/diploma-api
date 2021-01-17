@@ -1,4 +1,17 @@
+const bcrypt = require("bcryptjs");
+const nodemailer = require("nodemailer");
+const sendgridTransport = require("nodemailer-sendgrid-transport");
+
 const User = require("../models/user");
+
+const transporter = nodemailer.createTransport(
+  sendgridTransport({
+    auth: {
+      api_key:
+        "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",
+    },
+  })
+);
 
 exports.getLogin = (req, res, next) => {
   res.render("auth/login", {
@@ -17,41 +30,96 @@ exports.getSignup = (req, res, next) => {
 };
 
 exports.postLogin = (req, res, next) => {
-  User.findById("5bab316ce0a7c75f783cb8a8")
-    .then((user) => {
-      req.session.isLoggedIn = true;
-      req.session.user = user;
-      req.session.save((err) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  User.findOne({ email: email }).then((user) => {
+    if (!user)
+      return res
+        .status("400")
+        .send({ message: "Username or Password is incorrect!" });
+    bcrypt
+      .compare(password, user.password)
+      .then((doMatch) => {
+        if (doMatch) {
+          req.session.isLoggedIn = true;
+          req.session.user = user;
+          return req.session.save((result) => {
+            res.status("202").send({ message: "User is logged in!" });
+          });
+        }
+        res
+          .status("400")
+          .send({ message: "Username or Password is incorrect!" });
+      })
+      .catch((err) => {
         console.log(err);
-        res.redirect("/");
+        res
+          .status("400")
+          .send({ message: "Username or Password is incorrect!" });
       });
-    })
-    .catch((err) => console.log(err));
+  });
 };
 
 exports.postSignup = (req, res, next) => {
-  console.log("====================");
-  console.log(req.body);
-  console.log("====================");
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
-  const user = new User({
-    username: username,
-    password: password,
-    email: email,
-  });
-  user
-    .save()
-    .then((res) => {
-      console.log(res);
+  console.log("Step 1");
+  User.findOne({ email: email })
+    .then((userDoc) => {
+      if (userDoc) {
+        console.log("Step 2");
+        return res
+          .status("400")
+          .send({ message: "User with that email already exists!" });
+      }
+      return bcrypt.hash(password, 12).then((hashedPassword) => {
+        console.log("Step 2");
+        const user = new User({
+          username: username,
+          password: hashedPassword,
+          email: email,
+          isActive: false,
+          registerDate: Date.now(),
+          lastActivity: Date.now(),
+        });
+        return user
+          .save()
+          .then((result) => {
+            console.log(result);
+            res.status("201").send({ message: "User created!" });
+            console.log("send email");
+            return transporter.sendMail({
+              to: email,
+              from: "gj41360@zut.edu.pl",
+              subject: "You just signup",
+              html: "<h1>You successfully signed up!</h1>",
+            }).catch(err =>{
+              console.log(err);
+            });
+          })
+          .catch((err) =>
+            res
+              .status("400")
+              .send({ message: "User with this email already exists!" })
+          );
+      });
     })
-    //.catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      res.status("400");
+    });
 };
+
+exports.postResetPassword = (req, res, next) =>{
+
+}
+
+
 
 exports.postLogout = (req, res, next) => {
   req.session.destroy((err) => {
     console.log(err);
-    res.redirect("/");
+    res.status("200").send({ isLoggedIn: false });
   });
 };
