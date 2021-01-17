@@ -39,7 +39,7 @@ exports.postLogin = (req, res, next) => {
     if (!user)
       return res
         .status("400")
-        .send({ message: "Username or Password is incorrect!" });
+        .send({ message: "INCORRECT_CREDENTIALS" });
     bcrypt
       .compare(password, user.password)
       .then((doMatch) => {
@@ -61,13 +61,13 @@ exports.postLogin = (req, res, next) => {
         }
         res
           .status("400")
-          .send({ message: "Username or Password is incorrect!" });
+          .send({ message: "INCORRECT_CREDENTIALS" });
       })
       .catch((err) => {
         console.log(err);
         res
           .status("400")
-          .send({ message: "Username or Password is incorrect!" });
+          .send({ message: "INCORRECT_CREDENTIALS" });
       });
   });
 };
@@ -83,7 +83,7 @@ exports.postSignup = (req, res, next) => {
         console.log("Step 2");
         return res
           .status("400")
-          .send({ message: "User with that email already exists!" });
+          .send({ message: "EMAIL_EXISTS" });
       }
       return bcrypt.hash(password, 12).then((hashedPassword) => {
         console.log("Step 2");
@@ -93,14 +93,13 @@ exports.postSignup = (req, res, next) => {
           email: email,
           isActive: false,
           registerDate: Date.now(),
-          lastActivity: Date.now(),
+          lastActivity: Date.now()
         });
         return user
           .save()
           .then((result) => {
             console.log(result);
-            res.status("201").send({ message: "User created!" });
-            console.log("send email");
+            res.status("201").send({ message: "USER_CREATED" });
             return transporter.sendMail({
               to: email,
               from: "gj41360@zut.edu.pl",
@@ -119,14 +118,13 @@ exports.postSignup = (req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
-      res.status("400");
+      res.status("400").send({ message: "INCORRECT_CREDENTIALS" });
     });
 };
 
 exports.postResetPassword = (req, res, next) =>{
 
 }
-
 
 
 exports.postLogout = (req, res, next) => {
