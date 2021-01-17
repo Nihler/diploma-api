@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const sendgridTransport = require("nodemailer-sendgrid-transport");
+const jwt = require('jsonwebtoken');
 
 const User = require("../models/user");
 
@@ -45,8 +46,17 @@ exports.postLogin = (req, res, next) => {
         if (doMatch) {
           req.session.isLoggedIn = true;
           req.session.user = user;
+          const token = jwt.sign({id: user.userId}, config.secret, { 
+            expiresIn: 86400
+          });
+          //req.session.token = 
           return req.session.save((result) => {
-            res.status("202").send({ message: "User is logged in!" });
+            res.status("202").send({
+              id: user.userId,
+              accessToken: token,
+              email: user.email,
+              username: user.username
+            });
           });
         }
         res
