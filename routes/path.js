@@ -7,21 +7,14 @@ const isAuth = require("../middleware/is-auth");
 
 const router = express.Router();
 
-// // /admin/add-product => GET
-// router.get('/add-product', adminController.getAddProduct);
-
-// // /admin/products => GET
-// router.get('/products', adminController.getProducts);
-
-// // /admin/add-product => POST
-// router.post('/add-product', adminController.postAddProduct);
-
-// router.get('/edit-product/:productId', adminController.getEditProduct);
-
-// router.post('/edit-product', adminController.postEditProduct);
-
-// router.post('/delete-product', adminController.postDeleteProduct);
-
+router.use(function(req, res, next) {
+    res.header(
+      "Access-Control-Allow-Headers",
+      "x-access-token, Origin, Content-Type, Accept"
+    );
+    next();
+  });
+  
 router.post("/addRoute", [isAuth], pathController.postAddRoute);
 
 router.post("/myRoutes", [isAuth], pathController.postMyRoutes);
