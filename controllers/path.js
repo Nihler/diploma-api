@@ -1,4 +1,5 @@
 const Route = require("../models/path");
+const { route } = require("../routes/path");
 //const User = require("../models/user");
 
 exports.postAddRoute = (req, res, next) => {
@@ -27,7 +28,7 @@ exports.postAddRoute = (req, res, next) => {
 
 exports.postMyRoutes = (req, res, next) => {
   const userId = req.body.userId;
-  Route.find({ userId: userId })
+  Route.find({ userId: userId }).select('runStart, runStop')
     .then((paths) => {
       res.status("200").send(paths);
     })
@@ -35,3 +36,16 @@ exports.postMyRoutes = (req, res, next) => {
       console.log(err);
     });
 };
+
+exports.postDetails = (req, res, next) => {
+  const routeId = req.params.id;
+  console.log(routeId);
+  Route.findById(routeId).then(resData =>{
+    console.log(resData);
+    res.status('200').send(resData);
+  }).catch(err =>{
+    console.log(err);
+    res.status('400').send({message: "WRONG_ROUTE_ID"});
+  })
+  return true;
+}

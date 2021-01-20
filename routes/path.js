@@ -14,9 +14,11 @@ router.use(function(req, res, next) {
     );
     next();
   });
-  
+
 router.post("/addRoute", [isAuth], pathController.postAddRoute);
 
 router.post("/myRoutes", [isAuth], pathController.postMyRoutes);
+
+router.get("/details/:id", [isAuth], pathController.postDetails);
 
 module.exports = router;
