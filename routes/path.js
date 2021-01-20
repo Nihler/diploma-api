@@ -17,8 +17,8 @@ router.use(function(req, res, next) {
 
 router.post("/addRoute", [isAuth], pathController.postAddRoute);
 
-router.get("/myRoutes", [isAuth], pathController.getMyRoutes);
+router.post("/myRoutes", [isAuth], pathController.getMyRoutes);
 
-router.get("/details/:id", [isAuth], pathController.getDetails);
+router.post("/details/:id", [isAuth], pathController.getDetails);
 
 module.exports = router;
