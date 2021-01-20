@@ -26,9 +26,9 @@ exports.postAddRoute = (req, res, next) => {
   res.status("500");
 };
 
-exports.postMyRoutes = (req, res, next) => {
+exports.getMyRoutes = (req, res, next) => {
   const userId = req.body.userId;
-  Route.find({ userId: userId }).select('runStart, runStop')
+  Route.find({ userId: userId }, 'runStart runStop')
     .then((paths) => {
       res.status("200").send(paths);
     })
@@ -37,7 +37,7 @@ exports.postMyRoutes = (req, res, next) => {
     });
 };
 
-exports.postDetails = (req, res, next) => {
+exports.getDetails = (req, res, next) => {
   const routeId = req.params.id;
   console.log(routeId);
   Route.findById(routeId).then(resData =>{
