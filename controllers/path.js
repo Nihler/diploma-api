@@ -7,11 +7,13 @@ exports.postAddRoute = (req, res, next) => {
   const userId = req.body.userId;
   const runStart = req.body.runStart;
   const runStop = req.body.runStop;
+  const distance = req.body.distance;
   const route = new Route({
-    locations: req.body.locations,
+    locations: locations,
     userId: userId,
     runStart: runStart,
     runStop: runStop,
+    distance: distance
   });
   console.log(route);
   route

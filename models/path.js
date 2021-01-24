@@ -7,6 +7,7 @@ const routeSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   runStart: { type: Date, required: true },
   runStop: { type: Date, required: true },
+  distance: { type: Number, required: true}
 });
 
 module.exports = mongoose.model("Route", routeSchema);
